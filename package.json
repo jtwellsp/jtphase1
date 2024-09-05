@@ -2,8 +2,10 @@
   "name": "se-phase1",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,9 +19,15 @@
   },
   "homepage": "https://github.com/cs-450-project/se-phase1#readme",
   "devDependencies": {
-    "jest": "^29.7.0"
+    "@tsconfig/node20": "^20.1.4",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.5.4",
+    "jest": "^29.7.0",
+    "typescript": "^5.5.4"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "octokit": "^4.0.2"
   }
 }
