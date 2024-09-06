@@ -1,5 +1,5 @@
 import { Scorecard } from '../scores/scorecard';
-import { Metric } from './Metric';
+import { Metric } from './metric';
 
 export class LicenseMetric extends Metric {
     public evaluate(card: Scorecard): void {
