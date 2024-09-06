@@ -6,7 +6,7 @@
  */
 
 import express, { Express, Request, Response } from "express";
-import URLRoutes from "./routes/URLRoutes";
+import URLRoutes from "./server/routes/urlRoutes";
 import dotenv from "dotenv";
 
 dotenv.config();

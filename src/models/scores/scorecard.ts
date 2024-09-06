@@ -1,11 +1,16 @@
 /**
- * @class Module
- * @description This class serves as the framework modules
+ * @file scorecard.ts
+ * 
+ * @class Scorecard
+ * @description This class serves as the scorecard for modules
+ *              Here, the netScore is calculated based on the metrics evaluated.
+ *              The json report is generated and returned.
  * 
  */
 
-export abstract class Module {
+export class Scorecard {
     url: string;
+    urlRepo: string;
     netScore: number;
     netScore_Latency: number;
     rampUp: number;
@@ -17,10 +22,11 @@ export abstract class Module {
     responsiveMaintainer: number;
     responsiveMaintainer_Latency: number;
     license: number;
-    license_Latency: number
+    license_Latency: number;
     
-    constructor(url: string) {
+    constructor(url: string, urlRepo: string) {
         this.url = url;
+        this.urlRepo = urlRepo;
         this.netScore = 0;
         this.netScore_Latency = 0;
         this.rampUp = 0;
@@ -59,5 +65,4 @@ export abstract class Module {
         ];
         return JSON.stringify(scores);
     }
-    
 }
