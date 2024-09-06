@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# This script is used to start the CLI application.
+# The auto-grader will run this executable.
+
+# The script will take the following command line arguments and act accordingly:
+
+# './run URL_FILE':
+
+# Define the file containing the links.
+# Loop through each line in the file
+# POST each link to the API using curl, store the response (NDJSON).
+# Print the response from the API to the console.
+
+# './run test':
+
+# Send a GET request to the API to run the test suite, store the response.
+# Print the response from the API to the console.
+
+# './run install':
+
+# Pretend to install the necessary dependencies.
+# (We're deploying this to AWS, so there's no need to install anything.)
+
+

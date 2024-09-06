@@ -1,23 +1,25 @@
-import express, { Request, Response } from 'express';
-require('dotenv').config();
-
-const { sayHello } = require('./example.js');
-
-
-const apiKey: string = process.env.GITHUB_TOKEN!;
-
-const app = express();
-const PORT = 3000;
-
-app.get ('/', (req: Request, res: Response) => {
-    res.send(sayHello(apiKey));
-});
-
 /**
- * Start the Express server
- * @param port - The port number to run the server on
+ * @file index.ts
+ * @description Entry point of the API
+ * Here we are creating a simple express server.
+ * The server listens for requests made and processes the URLs accordingly.
  */
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+
+// Express module is used to create the server (REST API)
+import express, { Express, Request, Response } from "express";
+// Dotenv module reads the .env file allows environment variables to be utilized.
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const app: Express = express();
+const port = process.env.PORT || 3000;
+
+app.get("/", (req: Request, res: Response) => {
+  res.send("Express + TypeScript Server");
 });
 
+// Start the server listening on the specified port
+app.listen(port, () => {
+  console.log(`[server]: Server is running at http://localhost:${port}`);
+});
