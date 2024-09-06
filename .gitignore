@@ -1,4 +1,3 @@
-
 # Dependency directories
 node_modules/
 jspm_packages/
@@ -8,4 +7,3 @@ jspm_packages/
 .env.development.local
 .env.production.local
 .env.local
-
