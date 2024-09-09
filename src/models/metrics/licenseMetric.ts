@@ -1,9 +1,23 @@
+/**
+ * @file licenseMetric.ts
+ * 
+ */
+
 import { Scorecard } from '../scores/scorecard';
 import { Metric } from './metric';
 
+/**
+ * @class LicenseMetric
+ * 
+ * This class will evaluate the license metric of the module.
+ * The GitHub API will be used to obtain the license information.
+ * It will be compared to the approved license.
+ * 
+ */
 export class LicenseMetric extends Metric {
+
+    
     public evaluate(card: Scorecard): void {
         throw new Error('Method not implemented.');
     }
-    // Add your implementation here
 }
