@@ -1,13 +1,16 @@
 /**
  * @file scorecard.ts
  * 
- * @class Scorecard
- * @description This class serves as the scorecard for modules
- *              Here, the netScore is calculated based on the metrics evaluated.
- *              The json report is generated and returned.
- * 
  */
 
+
+/**
+ * @class Scorecard
+ * 
+ * This class holds all of the metric calculations carried out on the module.
+ * It is responsible for calculating the net score and returning results in JSON format.
+ * 
+ */
 export class Scorecard {
     url: string;
     urlRepo: string;
@@ -24,6 +27,14 @@ export class Scorecard {
     license: number;
     license_Latency: number;
     
+    /**
+     * @constructor 
+     * 
+     * The constuctor takes two url stings because npm modules will require a different initial URL than GitHub modules.
+     * 
+     * @param {string} url 
+     * @param {string} urlRepo 
+     */
     constructor(url: string, urlRepo: string) {
         this.url = url;
         this.urlRepo = urlRepo;
@@ -46,6 +57,7 @@ export class Scorecard {
         this.netScore = (this.rampUp + this.correctness + this.busFactor + this.responsiveMaintainer + this.license) / 5;
     }
 
+    // convert all member variables to JSON
     public getResults(): string {
         const scores = [
             { URL: this.url,
