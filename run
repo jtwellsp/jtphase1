@@ -2,7 +2,7 @@
 
 # Check if the number of command line arguments is less than 1
 if [ $# -lt 1 ]; then
-    echo "Usage: $0 <file_path> [install] [test]"
+    echo "Usage: $0 <file_path> <url> [install] [test] [dev]"
     exit 1
 fi
 
@@ -22,6 +22,13 @@ fi
 if [ $arg == "test" ]; then
     echo "Running npm test..."
     #npm test
+    exit 0
+fi
+
+# Run the development server
+if [ $arg == "dev" ]; then
+    echo "Running npm run dev..."
+    npm run dev
     exit 0
 fi
 

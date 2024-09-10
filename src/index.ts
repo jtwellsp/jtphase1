@@ -9,6 +9,13 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
+import { evaluateModule } from "./models/evaluators/evaluateModule";
+
+// Fill these in if you want to test while running in development mode
+const testURL = "";
+const testFile = "";
+
+// Command line arguments
 const argv = yargs(hideBin(process.argv))
   .option('url', {
     alias: 'u',
@@ -22,26 +29,29 @@ const argv = yargs(hideBin(process.argv))
   })
   .parseSync();
 
-if (argv.url) {
-  console.log(`URL: ${argv.url}`);
+// Get the URL and file from the command line arguments, or use testing values
+const url = argv.url || testURL;
+const file = argv.file || testFile;
+
+// Call the evaluateModule function with the URL
+if (url) {
+  const result = evaluateModule(url);
+  console.log(result);
 }
-if (argv.file) {
-  console.log(`File: ${argv.file}`);
+
+// [TODO] Add functionality to read URLs from a file
+if (file) {
+  console.log(`File: ${file}`);
 }
-
-
-import dotenv from "dotenv";
-dotenv.config();
-
-console.log("Hello, World!");
-
-
-
 
 /*
 // Here is the server code for when we want to convert the project to an API
+import dotenv from "dotenv";
+dotenv.config();
+
 import express, { Express, Request, Response } from "express";
 import URLRoutes from "./server/routes/urlRoutes";
+
 const app: Express = express();
 const port = process.env.PORT || 3000;
 

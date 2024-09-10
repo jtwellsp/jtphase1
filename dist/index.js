@@ -11,6 +11,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const yargs_1 = __importDefault(require("yargs"));
 const helpers_1 = require("yargs/helpers");
+const evaluateModule_1 = require("./models/evaluators/evaluateModule");
+const testURL = "";
+const testFile = "";
 const argv = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv))
     .option('url', {
     alias: 'u',
@@ -23,19 +26,23 @@ const argv = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv))
     describe: 'Path to the file containing the URLs'
 })
     .parseSync();
-if (argv.url) {
-    console.log(`URL: ${argv.url}`);
+const url = argv.url || testURL;
+const file = argv.file || testFile;
+if (url) {
+    const result = (0, evaluateModule_1.evaluateModule)(url);
+    console.log(result);
 }
-if (argv.file) {
-    console.log(`File: ${argv.file}`);
+if (file) {
+    console.log(`File: ${file}`);
 }
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-console.log("Hello, World!");
 /*
 // Here is the server code for when we want to convert the project to an API
+import dotenv from "dotenv";
+dotenv.config();
+
 import express, { Express, Request, Response } from "express";
 import URLRoutes from "./server/routes/urlRoutes";
+
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
