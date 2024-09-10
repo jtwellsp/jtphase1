@@ -2,12 +2,16 @@
 
 **Geting Started**
 
-- Install Node.js 20.17.0 and the respective npm
+- Install Node.js 20.17.0 and respective npm
 - Clone se-phase1 repository to your local machine
-- Checkout your respective branch
-- `npm install` downloads all packages used to your local machine
-- Create `.env` file in the root directory
-    - Add `PORT=3000` and other environment variables
-- `npm run dev` to start the application
-- Send post requests to `http://localhost:3000` using something like Insomnia
+- Checkout your branch
 
+**Running the Program**
+
+The 'run' excutable file in the root directory has the following options:
+
+- `./run install` Installs all the necessary packages and dependencies
+- `./run test` Runs the test suite
+- `./run dev` Run the program using live reload
+- `./run "<path to file>" Passes a file to index.ts for processing
+- `./run <url>' Allows you to test one URL at a time
