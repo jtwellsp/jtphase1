@@ -13,5 +13,5 @@ The 'run' excutable file in the root directory has the following options:
 - `./run install` Installs all the necessary packages and dependencies
 - `./run test` Runs the test suite
 - `./run dev` Run the program using live reload
-- `./run "<path to file>" Passes a file to index.ts for processing
-- `./run <url>' Allows you to test one URL at a time
+- `./run "<path to file>"` Passes a file to index.ts for processing (encase path in double quotes)
+- `./run <url>` Allows you to test one URL at a time
