@@ -1,20 +1,21 @@
-"use strict";
 /**
  * @file index.ts
  * @description Entry point of the API
  * Here we are creating a simple express server.
  * The server listens for requests made and processes the URLs accordingly.
  */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const yargs_1 = __importDefault(require("yargs"));
-const helpers_1 = require("yargs/helpers");
-const evaluateModule_1 = require("./models/evaluators/evaluateModule");
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { evaluateModule } from "./models/evaluators/evaluateModule.js";
+import { helper } from "./models/helper.js";
+import dotenv from "dotenv";
+dotenv.config();
+helper();
+// Fill these in if you want to test while running in development mode
 const testURL = "";
 const testFile = "";
-const argv = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv))
+// Command line arguments
+const argv = yargs(hideBin(process.argv))
     .option('url', {
     alias: 'u',
     type: 'string',
@@ -26,12 +27,15 @@ const argv = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv))
     describe: 'Path to the file containing the URLs'
 })
     .parseSync();
+// Get the URL and file from the command line arguments, or use testing values
 const url = argv.url || testURL;
 const file = argv.file || testFile;
+// Call the evaluateModule function with the URL
 if (url) {
-    const result = (0, evaluateModule_1.evaluateModule)(url);
+    const result = evaluateModule(url);
     console.log(result);
 }
+// [TODO] Add functionality to read URLs from a file
 if (file) {
     console.log(`File: ${file}`);
 }
@@ -55,3 +59,4 @@ app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
 */ 
+//# sourceMappingURL=index.js.map
