@@ -61,6 +61,7 @@ export class Scorecard {
     public getResults(): string {
         const scores = [
             { URL: this.url,
+                Repo: this.urlRepo,
                 NetScore: this.netScore,
                 NetScore_Latency: this.netScore_Latency,
                 RampUp: this.rampUp,
