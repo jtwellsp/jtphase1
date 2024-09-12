@@ -1,26 +1,37 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.evaluateModule = evaluateModule;
-const createScorecard_1 = require("./createScorecard");
-const licenseMetric_1 = require("../metrics/licenseMetric");
+/**
+ * @file evaluateModule.ts
+ *
+ * This is the main driving file for evaluating a module.
+ *
+ */
+import { createScorecard } from './createScorecard';
+import { LicenseMetric } from '../metrics/licenseMetric';
+/**
+ * @constant {Metric[]} metrics : Array of metrics to be evaluated
+ *
+ * All objects that derive from the the Metric abstract parent class are added to this array.
+ * We're utilizing polymorphism. The evaluate() method is implemented in each child class.
+ * So if we iterate through the array and call evaluate() on each object, we'll get the results of each metric.
+ *
+ */
 const metrics = [];
-metrics.push(new licenseMetric_1.LicenseMetric());
-function evaluateModule(url) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // Import and call the createScorecard function
-        console.log("I've made it to the evaluateModule function.");
-        const scorecard = yield (0, createScorecard_1.createScorecard)(url);
-        console.log("Scorecard created.");
-        console.log(scorecard.getResults());
-        return scorecard.getResults();
-    });
+// Add Metric objects to the array
+metrics.push(new LicenseMetric());
+/**
+ * @function evaluateModule
+ *
+ * This is the main driving function for evaluating modules.
+ * It creates a Scorecard object for the module and then passes it to each object in the array for evaluation.
+ * The results are then returned in JSON format, and will be passed to the front end.
+ *
+ * @param {string} url : URL of the module
+ * @returns {Promise<string>} : JSON string of the results
+ *
+ */
+export async function evaluateModule(url) {
+    // Call the createScorecard function
+    const scorecard = await createScorecard(url);
+    console.log("Scorecard created.");
+    console.log(scorecard.getResults());
+    return scorecard.getResults();
 }

@@ -1,23 +1,36 @@
-"use strict";
 /**
  * @file index.ts
  * @description Entry point of the API
  * Here we are creating a simple express server.
  * The server listens for requests made and processes the URLs accordingly.
  */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+import { Octokit } from "octokit";
+import dotenv from "dotenv";
+//import { evaluateModule } from "./models/evaluators/evaluateModule";
+// Load environment variables from .env file
+dotenv.config();
+// Get the GitHub token from environment variables
+const token = process.env.GITHUB_TOKEN;
+if (!token) {
+    throw new Error("GitHub token is not defined in the environment variables");
+}
+// Create an instance of Octokit with the token
+const octokit = new Octokit({ auth: token });
+// Compare: https://docs.github.com/en/rest/reference/users#get-the-authenticated-user
+const getData = async () => {
+    try {
+        const { data } = await octokit.rest.users.getAuthenticated();
+        const { login } = data;
+        console.log("Authenticated user login:", login);
+    }
+    catch (error) {
+        console.error("Error fetching authenticated user data:", error);
+        if (error.response) {
+            console.error("Status:", error.response.status);
+            console.error("Headers:", error.response.headers);
+            console.error("Data:", error.response.data);
+        }
+    }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const urlRoutes_1 = __importDefault(require("./server/routes/urlRoutes"));
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-const app = (0, express_1.default)();
-const port = process.env.PORT || 3000;
-app.use(express_1.default.json());
-app.use('/process-url', urlRoutes_1.default);
-// Start the server listening on the specified port
-app.listen(port, () => {
-    console.log(`[server]: Server is running at http://localhost:${port}`);
-});
+//console.log(evaluateModule("https://github.com"));
+getData();

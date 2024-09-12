@@ -1,11 +1,12 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const urlController_1 = __importDefault(require("../controllers/urlController"));
-const router = (0, express_1.Router)();
-// Define routes
-router.post('/', urlController_1.default.processURL);
-exports.default = router;
+/**
+ * @file urlRoutes.ts
+ *
+ * Defines the routes for the process-url endpoint.
+ *
+ */
+import { Router } from 'express';
+import URLController from '../controllers/urlController';
+const router = Router();
+// Define the post route and call the processURL method from the URLController.
+router.post('/', URLController.processURL);
+export default router;

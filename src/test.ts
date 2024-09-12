@@ -1,15 +1,6 @@
-/**
- * @file index.ts
- * @description Entry point of the API
- * Here we are creating a simple express server.
- * The server listens for requests made and processes the URLs accordingly.
- */
-
 
 import { Octokit } from "octokit";
 import dotenv from "dotenv";
-
-//import { evaluateModule } from "./models/evaluators/evaluateModule";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -39,9 +30,4 @@ const getData = async () => {
     }
   }
 };
-
-//console.log(evaluateModule("https://github.com"));
-
 getData();
-
-

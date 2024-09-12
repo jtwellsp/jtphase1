@@ -1,6 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Metric = void 0;
-class Metric {
+/**
+ * @file metric.ts
+ *
+ */
+/**
+ * @abstract
+ * @class Metric
+ *
+ * This is the abstract parent class for all metrics.
+ * It contains the evaluate() method that will be implemented in the child classes.
+ * This allows us to leverate polymorphism, and it follows the Command design pattern.
+ *
+ */
+export class Metric {
 }
-exports.Metric = Metric;

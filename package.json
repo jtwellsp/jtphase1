@@ -3,24 +3,33 @@
   "version": "1.0.0",
   "description": "**Geting Started**",
   "main": "src/index.ts",
+  "type": "module",
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "dev": "npx nodemon src/index.ts"
+    "dev": "npx nodemon src/index.ts",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/node": "^22.5.4",
+    "concurrently": "^9.0.0",
+    "jest": "^29.7.0",
     "jsdoc": "^4.0.3",
     "nodemon": "^3.1.4",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@octokit/types": "^13.5.0",
+    "axios": "^1.7.7",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "octokit": "^4.0.2"
   }
 }
