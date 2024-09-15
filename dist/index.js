@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const yargs_1 = __importDefault(require("yargs"));
 const helpers_1 = require("yargs/helpers");
 const evaluateModule_1 = require("./models/evaluators/evaluateModule");
+const readurlsfromfile_1 = require("./models/evaluators/readurlsfromfile");
 // Fill these in if you want to test while running in development mode
 const testURL = "";
 const testFile = "";
@@ -38,7 +39,8 @@ if (url) {
 }
 // [TODO] Add functionality to read URLs from a file
 if (file) {
-    console.log(`File: ${file}`);
+    //console.log(`File: ${file}`);
+    (0, readurlsfromfile_1.readUrlsFromFile)(file);
 }
 /*
 // Here is the server code for when we want to convert the project to an API

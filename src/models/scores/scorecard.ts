@@ -75,6 +75,6 @@ export class Scorecard {
                 License_Latency: this.license_Latency
             }
         ];
-        return JSON.stringify(scores);
+        return scores.map(score => JSON.stringify(score).replace(/,/g, ', ')).join('\n');
     }
 }

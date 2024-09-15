@@ -10,6 +10,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import { evaluateModule } from "./models/evaluators/evaluateModule";
+import { readUrlsFromFile } from './models/evaluators/readurlsfromfile';
 
 // Fill these in if you want to test while running in development mode
 const testURL = "";
@@ -41,7 +42,8 @@ if (url) {
 
 // [TODO] Add functionality to read URLs from a file
 if (file) {
-  console.log(`File: ${file}`);
+  //console.log(`File: ${file}`);
+  readUrlsFromFile(file);
 }
 
 /*
