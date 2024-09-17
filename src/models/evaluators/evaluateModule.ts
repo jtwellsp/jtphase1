@@ -9,6 +9,8 @@ import { Scorecard } from '../scores/scorecard';
 import { createScorecard } from './createScorecard';
 import { Metric } from '../metrics/metric';
 import { LicenseMetric } from '../metrics/licenseMetric';
+import * as fs from 'fs';
+
 
 /**
  * @constant {Metric[]} metrics : Array of metrics to be evaluated
@@ -43,4 +45,3 @@ export async function evaluateModule(url: string): Promise<string> {
 
     return scorecard.getResults();
 }
-   

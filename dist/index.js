@@ -12,8 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const yargs_1 = __importDefault(require("yargs"));
 const helpers_1 = require("yargs/helpers");
 const evaluateModule_1 = require("./models/evaluators/evaluateModule");
+// Fill these in if you want to test while running in development mode
 const testURL = "";
 const testFile = "";
+// Command line arguments
 const argv = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv))
     .option('url', {
     alias: 'u',
@@ -26,12 +28,15 @@ const argv = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv))
     describe: 'Path to the file containing the URLs'
 })
     .parseSync();
+// Get the URL and file from the command line arguments, or use testing values
 const url = argv.url || testURL;
 const file = argv.file || testFile;
+// Call the evaluateModule function with the URL
 if (url) {
     const result = (0, evaluateModule_1.evaluateModule)(url);
     console.log(result);
 }
+// [TODO] Add functionality to read URLs from a file
 if (file) {
     console.log(`File: ${file}`);
 }
