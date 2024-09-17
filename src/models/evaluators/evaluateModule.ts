@@ -40,8 +40,8 @@ export async function evaluateModule(url: string): Promise<string> {
     // Call the createScorecard function
     const scorecard: Scorecard = await createScorecard(url);
 
-    console.log("Scorecard created.");
-    console.log(scorecard.getResults());
+    //console.log("Scorecard created.");
+    //console.log(scorecard.getResults());
 
     return scorecard.getResults();
 }

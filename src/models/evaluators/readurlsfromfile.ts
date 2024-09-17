@@ -25,13 +25,12 @@ export function readUrlsFromFile(filePath: string): void {
         for (const url of urls) {
             try {
                 const result: string = await evaluateModule(url);
-                console.log(`Results for ${url}:`);
+                //console.log(`Results for ${url}:`);
                 console.log(result);
-                console.log(''); // Adding an extra blank line for better readability
+                //console.log(''); // Adding an extra blank line for better readability
             } catch (error) {
                 console.error(`Error evaluating module at ${url}: ${error}`);
             }
         }
     });
 }
-readUrlsFromFile('sample-file.txt');
