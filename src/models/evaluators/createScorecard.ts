@@ -16,7 +16,7 @@ import { URL } from 'url';
  * @param {string} url : URL of the module
  * @returns {Scorecard} : Scorecard object for the module
  */
-export function createScorecard(url: string): Scorecard {
+export async function createScorecard(url: string): Promise<Scorecard> {
     // Create URL object from the URL passed to the API
     const urlObject = new URL(url);
 
@@ -24,9 +24,19 @@ export function createScorecard(url: string): Scorecard {
     if (urlObject.hostname.includes("github.com")) {
         return new Scorecard(url, url);
     } else if (urlObject.hostname.includes("npmjs.com")) {
-        return new Scorecard(url, url);
+        const repoUrl = await getNpmRepoURL(url);
+        console.log();
+        return new Scorecard(url, repoUrl);
     } else {
         throw new Error("Invalid URL");
     }
     
+}
+
+async function getNpmRepoURL(url: string): Promise<string> {
+    const npmApiUrl = url.replace(/(?<=\/)www(?=\.)/, 'replicate').replace('/package', '')
+    const npmApiResponse = await fetch(npmApiUrl);
+    const npmApiData = await npmApiResponse.json();
+    const npmRepoUrl = npmApiData.repository.url;
+    return npmRepoUrl;
 }
