@@ -28,16 +28,20 @@ const argv = yargs(hideBin(process.argv))
 })
     .parseSync();
 // Get the URL and file from the command line arguments, or use testing values
+// Get the URL and file from the command line arguments, or use testing values
 const url = argv.url || testURL;
 const file = argv.file || testFile;
+// Call the evaluateModule function with the URL
 // Call the evaluateModule function with the URL
 if (url) {
     const result = evaluateModule(url);
     console.log(result);
 }
 // [TODO] Add functionality to read URLs from a file
+// [TODO] Add functionality to read URLs from a file
 if (file) {
-    console.log(`File: ${file}`);
+    //console.log(`File: ${file}`);
+    (0, readurlsfromfile_1.readUrlsFromFile)(file);
 }
 /*
 // Here is the server code for when we want to convert the project to an API

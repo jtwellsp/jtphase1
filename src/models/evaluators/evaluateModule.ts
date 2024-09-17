@@ -9,6 +9,8 @@ import { Scorecard } from '../scores/scorecard.js';
 import { createScorecard } from './createScorecard.js';
 import { Metric } from '../metrics/metric.js';
 import { LicenseMetric } from '../metrics/licenseMetric.js';
+import * as fs from 'fs';
+
 
 /**
  * @constant {Metric[]} metrics : Array of metrics to be evaluated
@@ -38,9 +40,8 @@ export async function evaluateModule(url: string): Promise<string> {
     // Call the createScorecard function
     const scorecard: Scorecard = await createScorecard(url);
 
-    console.log("Scorecard created.");
-    console.log(scorecard.getResults());
+    //console.log("Scorecard created.");
+    //console.log(scorecard.getResults());
 
     return scorecard.getResults();
 }
-   

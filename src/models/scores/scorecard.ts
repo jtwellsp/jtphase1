@@ -61,6 +61,7 @@ export class Scorecard {
     public getResults(): string {
         const scores = [
             { URL: this.url,
+                Repo: this.urlRepo,
                 NetScore: this.netScore,
                 NetScore_Latency: this.netScore_Latency,
                 RampUp: this.rampUp,
@@ -75,6 +76,6 @@ export class Scorecard {
                 License_Latency: this.license_Latency
             }
         ];
-        return JSON.stringify(scores);
+        return scores.map(score => JSON.stringify(score).replace(/,/g, ', ')).join('\n');
     }
 }
