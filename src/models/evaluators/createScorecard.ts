@@ -17,16 +17,19 @@ import { URL } from 'url';
  * @returns {Scorecard} : Scorecard object for the module
  */
 export async function createScorecard(url: string): Promise<Scorecard> {
+    
+    const trimmed = url.trim();
+
     // Create URL object from the URL passed to the API
-    const urlObject = new URL(url);
+    const urlObject = new URL(trimmed);
 
     // Check the hostname of the URL to return the correct Screocard object
     if (urlObject.hostname.includes("github.com")) {
-        return new Scorecard(url, url);
+        return new Scorecard(trimmed, trimmed);
     } else if (urlObject.hostname.includes("npmjs.com")) {
-        const repoUrl = await getNpmRepoURL(url);
+        const repoUrl = await getNpmRepoURL(trimmed);
         console.log();
-        return new Scorecard(url, repoUrl);
+        return new Scorecard(trimmed, repoUrl);
     } else {
         throw new Error("Invalid URL");
     }
