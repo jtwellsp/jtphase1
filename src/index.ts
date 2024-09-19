@@ -9,13 +9,10 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import { evaluateModule } from "./models/evaluators/evaluateModule.js";
-import { helper } from "./models/helper.js";
-import { readUrlsFromFile } from './models/evaluators/readurlsfromfile.js';
+import { readURLsFromFile } from "./models/evaluators/readURLsFromFile.js";
 
 import dotenv from "dotenv";
 dotenv.config();
-
-helper();
 
 
 // Fill these in if you want to test while running in development mode
@@ -49,7 +46,7 @@ if (url) {
 // [TODO] Add functionality to read URLs from a file
 if (file) {
   //console.log(`File: ${file}`);
-  readUrlsFromFile(file);
+  readURLsFromFile(file);
 }
 
 /*

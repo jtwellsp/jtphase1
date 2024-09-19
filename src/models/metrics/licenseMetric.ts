@@ -17,7 +17,8 @@ import { Metric } from './metric.js';
 export class LicenseMetric extends Metric {
 
     
-    public evaluate(card: Scorecard): void {
-        throw new Error('Method not implemented.');
+    public async evaluate(card: Scorecard): Promise<void> {
+        console.log('LicenseMetric evaluating scorecard');
+        card.license = 3;
     }
 }
