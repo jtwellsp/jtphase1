@@ -1,5 +1,5 @@
 /**
- * @function readUrlsFromFile
+ * @function readURLsFromFile
  * 
  * Reads URLs from a file and passes them to evaluateModule function
  * 
@@ -8,7 +8,7 @@
 import * as fs from 'fs';
 import {evaluateModule} from './evaluateModule.js';
 
-export function readUrlsFromFile(filePath: string): void {
+export function readURLsFromFile(filePath: string): void {
     fs.readFile(filePath, 'utf8', async (err: NodeJS.ErrnoException | null, data: string | null) => {
         if (err) {
             console.error(`Error reading file: ${err.message}`);

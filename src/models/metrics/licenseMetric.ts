@@ -6,6 +6,11 @@
 import { Scorecard } from '../scores/scorecard.js';
 import { Metric } from './metric.js';
 
+import { Octokit } from '@octokit/rest';
+
+import dotenv from 'dotenv';
+dotenv.config();
+
 /**
  * @class LicenseMetric
  * 
@@ -16,8 +21,8 @@ import { Metric } from './metric.js';
  */
 export class LicenseMetric extends Metric {
 
-    
-    public evaluate(card: Scorecard): void {
-        throw new Error('Method not implemented.');
-    }
+    // Evaluate the license metric
+    public async evaluate(card: Scorecard): Promise<void> {
+        
+    }    
 }

@@ -7,9 +7,15 @@
 
 import { Scorecard } from '../scores/scorecard.js';
 import { createScorecard } from './createScorecard.js';
+
 import { Metric } from '../metrics/metric.js';
+
+import { BusFactorMetric } from '../metrics/busfactorMetric.js';
+import { CorrectnessMetric } from '../metrics/correctnessMetric.js';
 import { LicenseMetric } from '../metrics/licenseMetric.js';
-import * as fs from 'fs';
+import { MaintainersMetric } from '../metrics/maintainersMetric.js';
+import { RampUpMetric } from '../metrics/rampupMetric.js';
+
 
 
 /**
@@ -21,9 +27,13 @@ import * as fs from 'fs';
  * 
  */ 
 const metrics: Metric[] = []
-
 // Add Metric objects to the array
+metrics.push(new BusFactorMetric());
+metrics.push(new CorrectnessMetric());
 metrics.push(new LicenseMetric());
+metrics.push(new MaintainersMetric());
+metrics.push(new RampUpMetric());
+
 
 /**
  * @function evaluateModule
@@ -37,11 +47,17 @@ metrics.push(new LicenseMetric());
  * 
  */
 export async function evaluateModule(url: string): Promise<string> {
+    
     // Call the createScorecard function
     const scorecard: Scorecard = await createScorecard(url);
 
-    //console.log("Scorecard created.");
-    //console.log(scorecard.getResults());
+    console.log("Owner: ", scorecard.owner);
+    console.log("Repo: ", scorecard.repo);
+
+    // Iterate through the array and call evaluate() on each object
+    for (const metric of metrics) {
+        await metric.evaluate(scorecard);
+    }
 
     return scorecard.getResults();
 }

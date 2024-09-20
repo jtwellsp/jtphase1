@@ -14,6 +14,8 @@
 export class Scorecard {
     url: string;
     urlRepo: string;
+    owner: string;
+    repo: string;
     netScore: number;
     netScore_Latency: number;
     rampUp: number;
@@ -38,6 +40,8 @@ export class Scorecard {
     constructor(url: string, urlRepo: string) {
         this.url = url;
         this.urlRepo = urlRepo;
+        this.owner = '';
+        this.repo = '';
         this.netScore = 0;
         this.netScore_Latency = 0;
         this.rampUp = 0;
@@ -50,6 +54,15 @@ export class Scorecard {
         this.responsiveMaintainer_Latency = 0;
         this.license = 0;
         this.license_Latency = 0;
+
+        // set GitHub attributes
+        this.setGitHubAttributes();
+        
+    }
+
+    public setGitHubAttributes() {
+        this.owner = this.urlRepo.split('/')[3];
+        this.repo = this.urlRepo.split('/')[4];
     }
 
     // [TODO] Add weights
