@@ -14,7 +14,6 @@ import { readURLsFromFile } from "./models/evaluators/readURLsFromFile.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-
 // Fill these in if you want to test while running in development mode
 const testURL = "";
 const testFile = "";
@@ -43,7 +42,6 @@ if (url) {
   console.log(result);
 }
 
-// [TODO] Add functionality to read URLs from a file
 if (file) {
   //console.log(`File: ${file}`);
   readURLsFromFile(file);

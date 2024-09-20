@@ -13,7 +13,6 @@ import { Metric } from './metric.js';
 export class BusFactorMetric extends Metric {
 
     public async evaluate(card: Scorecard): Promise<void> {
-        console.log('BusFactorMetric evaluating scorecard');
         card.busFactor = 1;
     }
 }

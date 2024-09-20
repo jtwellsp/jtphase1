@@ -13,7 +13,6 @@ import { Metric } from './metric.js';
 export class MaintainersMetric extends Metric {
 
     public async evaluate(card: Scorecard): Promise<void> {
-        console.log('MaintainersMetric evaluating scorecard');
         card.responsiveMaintainer = 4;
     }
 }

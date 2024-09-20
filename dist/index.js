@@ -34,7 +34,6 @@ if (url) {
     const result = evaluateModule(url);
     console.log(result);
 }
-// [TODO] Add functionality to read URLs from a file
 if (file) {
     //console.log(`File: ${file}`);
     readURLsFromFile(file);

@@ -13,7 +13,6 @@ import { Metric } from './metric.js';
 export class CorrectnessMetric extends Metric {
 
     public async evaluate(card: Scorecard): Promise<void> {
-        console.log('CorrectnessMetric evaluating scorecard');
         card.correctness = 2;
     }
 }
