@@ -25,6 +25,7 @@
     "@octokit/rest": "^21.0.2",
     "dotenv": "^16.4.5",
     "express": "^5.0.0",
+    "markdownlint": "^0.35.0",
     "yargs": "^17.7.2"
   }
 }
