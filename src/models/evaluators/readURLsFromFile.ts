@@ -7,29 +7,37 @@
  */
 import * as fs from 'fs';
 import {evaluateModule} from './evaluateModule.js';
+import { pino } from 'pino';
+const logger = pino({
+    level: 'info',
+    transport: {
+        target: 'pino-pretty',
+    },
+});
 
 export function readURLsFromFile(filePath: string): void {
+    logger.info(`Reading URLs from file: ${filePath}`);
     fs.readFile(filePath, 'utf8', async (err: NodeJS.ErrnoException | null, data: string | null) => {
         if (err) {
-            console.error(`Error reading file: ${err.message}`);
+            logger.error(`Error reading file: ${err.message}`);
             return;
         }
 
         if (data === null) {
-            console.error('Error: File data is null.');
+            logger.error('Error: File data is null.');
             return;
         }
 
         const urls: string[] = data.split('\n').filter(url => url.trim() !== '');
-
+        logger.info(`Found ${urls.length} URL(s) in the file.`);
         for (const url of urls) {
             try {
+                logger.info(`Evaluating module at URL: ${url}`);
                 const result: string = await evaluateModule(url);
-                //console.log(`Results for ${url}:`);
-                console.log(result);
-                //console.log(''); // Adding an extra blank line for better readability
+                logger.info(`Results for ${url}: ${result}`);
+                
             } catch (error) {
-                console.error(`Error evaluating module at ${url}: ${error}`);
+                logger.error(`Error evaluating module at ${url}: ${error}`);
             }
         }
     });

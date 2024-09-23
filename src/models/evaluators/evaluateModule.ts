@@ -15,8 +15,13 @@ import { CorrectnessMetric } from '../metrics/correctnessMetric.js';
 import { LicenseMetric } from '../metrics/licenseMetric.js';
 import { MaintainersMetric } from '../metrics/maintainersMetric.js';
 import { RampUpMetric } from '../metrics/rampupMetric.js';
-
-
+import { pino } from 'pino';
+const logger = pino({
+    level: 'info',
+    transport: {
+        target: 'pino-pretty',
+    },
+});
 
 /**
  * @constant {Metric[]} metrics : Array of metrics to be evaluated
@@ -47,17 +52,18 @@ metrics.push(new RampUpMetric());
  * 
  */
 export async function evaluateModule(url: string): Promise<string> {
-    
+    logger.info(`Evaluating module at URL: ${url}`);
     // Call the createScorecard function
     const scorecard: Scorecard = await createScorecard(url);
 
-    console.log("Owner: ", scorecard.owner);
-    console.log("Repo: ", scorecard.repo);
+    logger.info("Owner: ", scorecard.owner);
+    logger.info("Repo: ", scorecard.repo);
 
     // Iterate through the array and call evaluate() on each object
     for (const metric of metrics) {
+        logger.info(`Evaluating metric: ${metric.constructor.name}`);
         await metric.evaluate(scorecard);
     }
-
+    logger.info("Evaluation results: ", scorecard.getResults());
     return scorecard.getResults();
 }
