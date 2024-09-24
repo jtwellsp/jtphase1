@@ -128,3 +128,11 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Folder view configuration files
+.DS_Store
+Desktop.ini
+Thumbs.db
+
+# Ignore built ts files
+dist/**/*
