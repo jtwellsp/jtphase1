@@ -1,18 +1,82 @@
 /**
- * @file busfactorMetric.ts
- * 
+ * @file busFactorMetric.ts
  */
 
 import { Scorecard } from '../scores/scorecard.js';
 import { Metric } from './metric.js';
 
+import { Octokit } from '@octokit/rest';
+
+import dotenv from 'dotenv';
+dotenv.config();
+
 /**
  * @class BusFactorMetric
- * 
+ *
+ * Evaluates the bus factor of the repository by analyzing the distribution of contributions among contributors.
+ * Also calculates and logs the latency of the GitHub API request.
  */
 export class BusFactorMetric extends Metric {
 
-    public async evaluate(card: Scorecard): Promise<void> {
-        card.busFactor = 1;
+    private octokit!: Octokit;
+
+    constructor() {
+        super();
+        console.log(process.env.GITHUB_TOKEN); // Debug: Check if GITHUB_TOKEN is set
+        try {
+            this.octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+            console.log(this.octokit.request.endpoint.DEFAULTS.baseUrl); // Debug: Check the base URL
+        } catch (error) {
+            console.error('Error initializing Octokit:', error);
+        }
+    }
+
+    public async evaluate(card: Scorecard & { BusFactor_Latency?: number }): Promise<void> {
+        try {
+            // Measure start time
+            const startTime = Date.now();
+
+            // Fetch contributors data from GitHub API
+            const contributorsData = await this.octokit.repos.listContributors({
+                owner: card.owner,
+                repo: card.repo,
+                per_page: 100,
+            });
+
+            // Measure end time
+            const endTime = Date.now();
+
+            // Calculate latency in milliseconds
+            card.busFactor_Latency = endTime - startTime;
+            //console.log(`API Latency: ${card.busFactor_Latency} ms`); 
+
+            const contributors = contributorsData.data;
+
+            if (contributors.length === 0) {
+                card.busFactor = 0;
+                return;
+            }
+
+            const totalContributions = contributors.reduce((sum, contributor) => sum + contributor.contributions, 0);
+
+            const topContributions = contributors[0].contributions;
+
+            const topContributorPercentage = topContributions / totalContributions;
+
+            // Scoring logic based on top contributor's percentage
+            if (topContributorPercentage >= 0.8) {
+                card.busFactor = 0;
+            } else if (topContributorPercentage >= 0.6) {
+                card.busFactor = 0.2;
+            } else if (topContributorPercentage >= 0.4) {
+                card.busFactor = 0.5;
+            } else {
+                card.busFactor = 1;
+            }
+
+        } catch (error) {
+            console.error('Error fetching contributors information:', error);
+            card.busFactor = 0;
+        }
     }
 }

@@ -39,13 +39,22 @@ export class LicenseMetric extends Metric {
     public async evaluate(card: Scorecard): Promise<void> {
         
         try {
+            let totalLatency = 0;
+
+            // Measure latency for fetching repository information
+            const startRepoFetch = Date.now();
+
             // Fetch the repository information from the GitHub API
             const { data } = await this.octokit.repos.get({
                 owner: card.owner, 
                 repo: card.repo,   
             });
 
-            // Check if the license is set in the LICENSE. file
+            const endRepoFetch = Date.now();
+            const repoFetchLatency = endRepoFetch - startRepoFetch;
+            totalLatency += repoFetchLatency; // Accumulate latency
+
+            // Check if the license is set in the LICENSE file
             if (data.license) {
                 if (data.license.spdx_id != null && this.approvedLicensesIdentifiers.includes(data.license.spdx_id)) {
                     card.license = 1;
@@ -58,21 +67,33 @@ export class LicenseMetric extends Metric {
 
             // Check the README if the license is not set in the LICENSE file
             if (card.license === 0) {
+                // Measure latency for fetching the README file
+                const startReadmeFetch = Date.now();
+
                 // Get README content
                 const readmeData = await this.octokit.repos.getReadme({
                     owner: card.owner,
                     repo: card.repo,
                 });
+
+                const endReadmeFetch = Date.now();
+                const readmeFetchLatency = endReadmeFetch - startReadmeFetch;
+                totalLatency += readmeFetchLatency; // Accumulate latency
+
                 // Decode the content
                 const readmeContent = Buffer.from(readmeData.data.content, 'base64').toString('utf-8');
                 if (this.checkLicenseInReadme(readmeContent)) {
                     card.license = 1;
                 }
             }
+
+            // Set the total latency for license evaluation
+            card.license_Latency = totalLatency;
             
         } catch (error) {
             console.error('Error fetching license information:', error);
             card.license = 0;
+            card.license_Latency = 0; // Set latency to 0 in case of error
         }
     }
 
