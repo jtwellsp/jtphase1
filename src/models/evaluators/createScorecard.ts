@@ -5,13 +5,7 @@
 
 import { Scorecard } from "../scores/scorecard.js";
 import { URL } from 'url';
-import { pino } from 'pino';
-const logger = pino({
-    level: 'info',
-    transport: {
-        target: 'pino-pretty',
-    },
-});
+import logger from '../../logger.js';
 
 /**
  * @function createScorecard
@@ -31,6 +25,7 @@ export async function createScorecard(url: string): Promise<Scorecard> {
 
     // Check the hostname of the URL to pass the correct URLs to the setGitHubAttributes function
     if (urlObject.hostname.includes("github.com")) {
+        logger.info(`Detected GitHub URL: ${trimmed}`);
         return setGitHubAttributes(trimmed, trimmed);
     } else if (urlObject.hostname.includes("npmjs.com")) {
         logger.info(`Detected npm URL: ${trimmed}`);
@@ -70,8 +65,13 @@ function setGitHubAttributes(url: string, urlRepo: string): Scorecard {
     const card = new Scorecard(url);
     card.owner = urlRepo.split('/')[3];
     card.repo = urlRepo.split('/')[4];
+
     if (card.repo.includes('.git')) {
         card.repo = card.repo.replace('.git', '');
     }
+
+    logger.info(`Owner: ${card.owner}`);
+    logger.info(`Repo: ${card.repo}`);
+
     return card
 }

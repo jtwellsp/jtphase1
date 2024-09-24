@@ -5,15 +5,12 @@
  * 
  * @param {string} filePath : Path to the file containing URLs
  */
+
+import logger from '../../logger.js';
+
 import * as fs from 'fs';
 import {evaluateModule} from './evaluateModule.js';
-import { pino } from 'pino';
-const logger = pino({
-    level: 'info',
-    transport: {
-        target: 'pino-pretty',
-    },
-});
+
 
 export function readURLsFromFile(filePath: string): void {
     logger.info(`Reading URLs from file: ${filePath}`);
@@ -32,9 +29,13 @@ export function readURLsFromFile(filePath: string): void {
         logger.info(`Found ${urls.length} URL(s) in the file.`);
         for (const url of urls) {
             try {
-                logger.info(`Evaluating module at URL: ${url}`);
+
                 const result: string = await evaluateModule(url);
+                logger.flush();
+                
                 logger.info(`Results for ${url}: ${result}`);
+
+                console.log(result);
                 
             } catch (error) {
                 logger.error(`Error evaluating module at ${url}: ${error}`);
