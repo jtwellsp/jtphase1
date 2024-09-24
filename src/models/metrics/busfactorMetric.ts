@@ -14,23 +14,41 @@ dotenv.config();
  * @class BusFactorMetric
  *
  * Evaluates the bus factor of the repository by analyzing the distribution of contributions among contributors.
+ * Also calculates and logs the latency of the GitHub API request.
  */
 export class BusFactorMetric extends Metric {
 
-    private octokit: Octokit;
+    private octokit!: Octokit;
 
     constructor() {
         super();
-        this.octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+        console.log(process.env.GITHUB_TOKEN); // Debug: Check if GITHUB_TOKEN is set
+        try {
+            this.octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+            console.log(this.octokit.request.endpoint.DEFAULTS.baseUrl); // Debug: Check the base URL
+        } catch (error) {
+            console.error('Error initializing Octokit:', error);
+        }
     }
 
-    public async evaluate(card: Scorecard): Promise<void> {
+    public async evaluate(card: Scorecard & { BusFactor_Latency?: number }): Promise<void> {
         try {
+            // Measure start time
+            const startTime = Date.now();
+
+            // Fetch contributors data from GitHub API
             const contributorsData = await this.octokit.repos.listContributors({
                 owner: card.owner,
                 repo: card.repo,
                 per_page: 100,
             });
+
+            // Measure end time
+            const endTime = Date.now();
+
+            // Calculate latency in milliseconds
+            card.busFactor_Latency = endTime - startTime;
+            //console.log(`API Latency: ${card.busFactor_Latency} ms`); 
 
             const contributors = contributorsData.data;
 

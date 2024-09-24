@@ -15,6 +15,7 @@ dotenv.config();
  * @class RampUpMetric
  *
  * Evaluates the ramp-up time by analyzing the README and documentation.
+ * Also calculates the latency of API requests to GitHub.
  */
 export class RampUpMetric extends Metric {
 
@@ -27,16 +28,26 @@ export class RampUpMetric extends Metric {
 
     public async evaluate(card: Scorecard): Promise<void> {
         try {
+            // Measure start time
+            const startTime = Date.now();
+
+            // Fetch the README file from the repository
             const readmeData = await this.octokit.repos.getReadme({
                 owner: card.owner,
                 repo: card.repo,
             });
 
+            // Measure end time
+            const endTime = Date.now();
+            card.rampUp_Latency = endTime - startTime;
+            //console.log(`getReadme API Latency: ${latency} ms`);
+
             const readmeContent = Buffer.from(readmeData.data.content, 'base64').toString('utf-8');
 
+            // Analyze README content to compute score
             const readmeScore = this.analyzeReadme(readmeContent);
 
-            // Assign the score
+            // Assign the score to the ramp-up field in Scorecard
             card.rampUp = readmeScore;
 
         } catch (error) {
@@ -48,7 +59,7 @@ export class RampUpMetric extends Metric {
     private analyzeReadme(content: string): number {
         let score = 0;
 
-        // Check for key sections
+        // Check for key sections in the README
         const sections = ['Installation', 'Usage', 'Contributing', 'License'];
         sections.forEach(section => {
             const regex = new RegExp(`#\\s*${section}`, 'i');
@@ -57,14 +68,14 @@ export class RampUpMetric extends Metric {
             }
         });
 
-        // Lint the README for quality
+        // Lint the README for quality and markdown errors
         const options = { strings: { content }, config: { default: true } };
         const lintResults = markdownlint.sync(options);
 
         const lintScore = lintResults.toString().split('\n').length > 0 ? 0 : 0.2;
         score += lintScore;
 
-        // Ensure score is between 0 and 1
+        // Ensure the score is between 0 and 1
         return Math.min(score, 1);
     }
 }

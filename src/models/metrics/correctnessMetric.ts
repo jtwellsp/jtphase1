@@ -14,6 +14,7 @@ dotenv.config();
  * @class CorrectnessMetric
  *
  * Evaluates the correctness of the repository by checking for test suites and analyzing bug reports.
+ * Also calculates the latency of API requests to GitHub.
  */
 export class CorrectnessMetric extends Metric {
 
@@ -47,24 +48,46 @@ export class CorrectnessMetric extends Metric {
 
     private async checkForTests(card: Scorecard): Promise<boolean> {
         try {
+            // Measure start time
+            const startTime = Date.now();
+
+            // Fetch package.json content
             const packageJsonData = await this.octokit.repos.getContent({
                 owner: card.owner,
                 repo: card.repo,
                 path: 'package.json',
             });
 
+            // Measure end time
+            const endTime = Date.now();
+            card.correctness_Latency = endTime - startTime;
+            //console.log(`checkForTests API Latency: ${latency} ms`); 
+
             const packageJsonContent = Buffer.from((packageJsonData.data as any).content, 'base64').toString('utf-8');
             const packageJson = JSON.parse(packageJsonContent);
 
             return !!(packageJson.scripts && packageJson.scripts.test);
 
-        } catch {
-            return false;
+            
+        } catch (error: any) {
+            if (error.status === 404) {
+                console.warn('package.json not found in the repository.');
+                // Return false if package.json is not found
+                return false; 
+            } else {
+                console.error('Error checking for tests:', error);
+                // Return false for other errors as well
+                return false; 
+            }
         }
     }
 
     private async analyzeBugs(card: Scorecard): Promise<number> {
         try {
+            // Measure start time
+            const startTime = Date.now();
+
+            // Fetch issues data from GitHub
             const issuesData = await this.octokit.issues.listForRepo({
                 owner: card.owner,
                 repo: card.repo,
@@ -72,6 +95,11 @@ export class CorrectnessMetric extends Metric {
                 state: 'all',
                 per_page: 100,
             });
+
+            // Measure end time
+            const endTime = Date.now();
+            card.correctness_Latency = endTime - startTime;
+            //console.log(`analyzeBugs API Latency: ${latency} ms`); 
 
             const issues = issuesData.data;
             const openBugs = issues.filter(issue => issue.state === 'open').length;
@@ -93,7 +121,8 @@ export class CorrectnessMetric extends Metric {
                 return 0.5;
             }
 
-        } catch {
+        } catch (error) {
+            console.error('Error analyzing bugs:', error);
             return 0; // Low score if unable to fetch issues
         }
     }
