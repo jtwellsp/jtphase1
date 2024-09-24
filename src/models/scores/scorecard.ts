@@ -9,11 +9,11 @@
  * 
  * This class holds all of the metric calculations carried out on the module.
  * It is responsible for calculating the net score and returning results in JSON format.
+ * Instance of Scorecard are passed into the different metrics classes as a "request" object.
  * 
  */
 export class Scorecard {
     url: string;
-    urlRepo: string;
     owner: string;
     repo: string;
     netScore: number;
@@ -32,14 +32,12 @@ export class Scorecard {
     /**
      * @constructor 
      * 
-     * The constuctor takes two url stings because npm modules will require a different initial URL than GitHub modules.
+     * The constuctor takes two url stings because npm modules will require a different initial URL than GitHub modules..
+     * All of the scores of the various metrics are initialized to 0. 
      * 
-     * @param {string} url 
-     * @param {string} urlRepo 
      */
-    constructor(url: string, urlRepo: string) {
+    constructor(url: string) {
         this.url = url;
-        this.urlRepo = urlRepo;
         this.owner = '';
         this.repo = '';
         this.netScore = 0;
@@ -54,27 +52,18 @@ export class Scorecard {
         this.responsiveMaintainer_Latency = 0;
         this.license = 0;
         this.license_Latency = 0;
-
-        // set GitHub attributes
-        this.setGitHubAttributes();
-        
     }
 
-    public setGitHubAttributes() {
-        this.owner = this.urlRepo.split('/')[3];
-        this.repo = this.urlRepo.split('/')[4];
-    }
-
+    
     // [TODO] Add weights
     public calculateNetScore(): void {
         this.netScore = (this.rampUp + this.correctness + this.busFactor + this.responsiveMaintainer + this.license) / 5;
     }
 
-    // convert all member variables to JSON
+    // Convert all member variables to NJSON
     public getResults(): string {
         const scores = [
             { URL: this.url,
-                Repo: this.urlRepo,
                 NetScore: this.netScore,
                 NetScore_Latency: this.netScore_Latency,
                 RampUp: this.rampUp,
@@ -89,6 +78,7 @@ export class Scorecard {
                 License_Latency: this.license_Latency
             }
         ];
+        // Convert the array to a JSON string
         return scores.map(score => JSON.stringify(score).replace(/,/g, ', ')).join('\n');
     }
 }
