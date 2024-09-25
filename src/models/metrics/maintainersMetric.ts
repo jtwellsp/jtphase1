@@ -29,7 +29,7 @@ export class MaintainersMetric extends Metric {
             const sinceDate = new Date();
             sinceDate.setMonth(sinceDate.getMonth() - 1); 
 
-            console.log(`Fetching issues for ${card.owner}/${card.repo} since ${sinceDate.toISOString()}`);
+            console.error(`Fetching issues for ${card.owner}/${card.repo} since ${sinceDate.toISOString()}`);
             
             const issuesData = await this.octokit.issues.listForRepo({
                 owner: card.owner,
