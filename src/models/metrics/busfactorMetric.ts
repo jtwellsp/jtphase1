@@ -22,10 +22,8 @@ export class BusFactorMetric extends Metric {
 
     constructor() {
         super();
-        console.log(process.env.GITHUB_TOKEN); // Debug: Check if GITHUB_TOKEN is set
         try {
             this.octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-            console.log(this.octokit.request.endpoint.DEFAULTS.baseUrl); // Debug: Check the base URL
         } catch (error) {
             console.error('Error initializing Octokit:', error);
         }
