@@ -43,7 +43,7 @@ export class RampUpMetric extends Metric {
             // Measure end time
             const fetchEndTime = Date.now();
             card.rampUp_Latency = parseFloat(((fetchEndTime - fetchStartTime) / 1000).toFixed(3));
-            logger.info(`Fetched README for ${card.owner}/${card.repo}, API Latency: ${latency} ms`);
+            logger.info(`Fetched README for ${card.owner}/${card.repo}, API Latency: ${card.rampUp_Latency} ms`);
 
             // Decode the README content
             const readmeContent = Buffer.from(readmeData.data.content, 'base64').toString('utf-8');
@@ -55,7 +55,8 @@ export class RampUpMetric extends Metric {
             logger.info(`Ramp-up score for ${card.owner}/${card.repo} computed: ${readmeScore}`);
 
         } catch (error) {
-            logger.error(`Error fetching README information for ${card.owner}/${card.repo}: ${error.message}`);
+            const err = error as Error;
+            logger.error(`Error fetching README information for ${card.owner}/${card.repo}: ${err.message}`);
             card.rampUp = 0;
         }
 
