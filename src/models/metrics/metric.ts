@@ -4,7 +4,6 @@
  */
 
 import { Scorecard } from "../scores/scorecard.js";
-
 /**
  * @abstract
  * @class Metric
