@@ -49,7 +49,7 @@ export class CorrectnessMetric extends Metric {
     private async checkForTests(card: Scorecard): Promise<boolean> {
         try {
             // Measure start time
-            const startTime = Date.now();
+            const fetchStartTime = Date.now();
 
             // Fetch package.json content
             const packageJsonData = await this.octokit.repos.getContent({
@@ -59,9 +59,9 @@ export class CorrectnessMetric extends Metric {
             });
 
             // Measure end time
-            const endTime = Date.now();
-            card.correctness_Latency = endTime - startTime;
-            //console.log(`checkForTests API Latency: ${latency} ms`); 
+            const fetchEndTime = Date.now();
+            card.correctness_Latency = parseFloat(((fetchEndTime - fetchStartTime) / 1000).toFixed(3));
+            
 
             const packageJsonContent = Buffer.from((packageJsonData.data as any).content, 'base64').toString('utf-8');
             const packageJson = JSON.parse(packageJsonContent);
