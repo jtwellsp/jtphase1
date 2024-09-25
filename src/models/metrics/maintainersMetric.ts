@@ -27,19 +27,22 @@ export class MaintainersMetric extends Metric {
     public async evaluate(card: Scorecard): Promise<void> {
         try {
             const sinceDate = new Date();
-            sinceDate.setMonth(sinceDate.getMonth() - 1); // Last 30 days
+            sinceDate.setMonth(sinceDate.getMonth() - 1); 
 
+            console.log(`Fetching issues for ${card.owner}/${card.repo} since ${sinceDate.toISOString()}`);
+            
             const issuesData = await this.octokit.issues.listForRepo({
                 owner: card.owner,
                 repo: card.repo,
                 since: sinceDate.toISOString(),
-                state: 'open',
+                state: 'all', 
                 per_page: 100,
             });
 
             const issues = issuesData.data;
             if (issues.length === 0) {
                 card.responsiveMaintainer = 1;
+                card.responsiveMaintainer_Latency = 0;
                 return;
             }
 
@@ -56,28 +59,29 @@ export class MaintainersMetric extends Metric {
 
             if (responseCount === 0) {
                 card.responsiveMaintainer = 0;
+                card.responsiveMaintainer_Latency = 0;
                 return;
             }
 
             const averageResponseTime = totalResponseTime / responseCount;
-
-            // Scoring logic based on average response time
+            card.responsiveMaintainer_Latency = averageResponseTime;  
+            
             let responseScore = 1;
-            if (averageResponseTime <= 24) {
+            if (averageResponseTime <= 72) {  
                 responseScore = 1;
-            } else if (averageResponseTime <= 72) {
+            } else if (averageResponseTime <= 168) { 
                 responseScore = 0.7;
-            } else if (averageResponseTime <= 168) {
+            } else if (averageResponseTime <= 336) { 
                 responseScore = 0.4;
-            } else {
+            } else {  
                 responseScore = 0;
             }
 
             card.responsiveMaintainer = responseScore;
 
         } catch (error) {
-            console.error('Error fetching responsiveness information:', error);
             card.responsiveMaintainer = 0;
+            card.responsiveMaintainer_Latency = 0;
         }
     }
 
@@ -92,24 +96,17 @@ export class MaintainersMetric extends Metric {
             const comments = commentsData.data;
 
             for (const comment of comments) {
-                if (comment.user) {
-                    const isCollaborator = await this.octokit.repos.checkCollaborator({
-                        owner: card.owner,
-                        repo: card.repo,
-                        username: comment.user.login,
-                    }).then(() => true).catch(() => false);
-            
-                    if (isCollaborator) {
-                        const issueCreatedAt = new Date(issue.created_at);
-                        const commentCreatedAt = new Date(comment.created_at);
-                        const responseTime = (commentCreatedAt.getTime() - issueCreatedAt.getTime()) / (1000 * 60 * 60);
-                        return responseTime;
-                    }
+                const validAssociations = ['COLLABORATOR', 'MEMBER', 'OWNER', 'CONTRIBUTOR'];
+                if (comment.user && validAssociations.includes(comment.author_association)) {
+                    const issueCreatedAt = new Date(issue.created_at);
+                    const commentCreatedAt = new Date(comment.created_at);
+                    const responseTime = (commentCreatedAt.getTime() - issueCreatedAt.getTime()) / (1000 * 60 * 60);
+                    return responseTime;
                 }
             }
 
             return null;
-        } catch {
+        } catch (error) {
             return null;
         }
     }

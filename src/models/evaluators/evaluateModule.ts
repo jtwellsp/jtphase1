@@ -31,7 +31,7 @@ const metrics: Metric[] = []
 metrics.push(new BusFactorMetric());
 metrics.push(new CorrectnessMetric());
 metrics.push(new LicenseMetric());
-//metrics.push(new MaintainersMetric());
+metrics.push(new MaintainersMetric());
 metrics.push(new RampUpMetric());
 
 
