@@ -28,11 +28,10 @@ export class RampUpMetric extends Metric {
     }
 
     public async evaluate(card: Scorecard): Promise<void> {
-        this.logEvaluationStart(card);
         
         try {
             // Measure start time
-            const startTime = Date.now();
+            const fetchStartTime = Date.now();
 
             // Fetch the README file from the repository
             logger.debug(`Fetching README for ${card.owner}/${card.repo}...`);
@@ -42,10 +41,8 @@ export class RampUpMetric extends Metric {
             });
 
             // Measure end time
-            const endTime = Date.now();
-            const latency = endTime - startTime;
-            card.rampUp_Latency = latency;
-
+            const fetchEndTime = Date.now();
+            card.rampUp_Latency = parseFloat(((fetchEndTime - fetchStartTime) / 1000).toFixed(3));
             logger.info(`Fetched README for ${card.owner}/${card.repo}, API Latency: ${latency} ms`);
 
             // Decode the README content
@@ -54,7 +51,7 @@ export class RampUpMetric extends Metric {
 
             // Analyze README content to compute score
             const readmeScore = this.analyzeReadme(readmeContent);
-            card.rampUp = readmeScore;
+            card.rampUp = Number(readmeScore.toFixed(3));
             logger.info(`Ramp-up score for ${card.owner}/${card.repo} computed: ${readmeScore}`);
 
         } catch (error) {
@@ -62,7 +59,6 @@ export class RampUpMetric extends Metric {
             card.rampUp = 0;
         }
 
-        this.logEvaluationEnd(card);
     }
 
     private analyzeReadme(content: string): number {

@@ -57,7 +57,7 @@ export class CorrectnessMetric extends Metric {
     private async checkForTests(card: Scorecard): Promise<boolean> {
         try {
             // Measure start time
-            const startTime = Date.now();
+            const fetchStartTime = Date.now();
             logger.debug('Fetching package.json from the repository...');
 
             // Fetch package.json content
@@ -68,8 +68,8 @@ export class CorrectnessMetric extends Metric {
             });
 
             // Measure end time
-            const endTime = Date.now();
-            card.correctness_Latency = endTime - startTime;
+            const fetchEndTime = Date.now();
+            card.correctness_Latency = parseFloat(((fetchEndTime - fetchStartTime) / 1000).toFixed(3));
             logger.info(`checkForTests API Latency: ${card.correctness_Latency} ms`);
 
             const packageJsonContent = Buffer.from((packageJsonData.data as any).content, 'base64').toString('utf-8');
@@ -93,7 +93,7 @@ export class CorrectnessMetric extends Metric {
     private async analyzeBugs(card: Scorecard): Promise<number> {
         try {
             // Measure start time
-            const startTime = Date.now();
+            const fetchStartTime = Date.now();
             logger.debug('Fetching bug reports (issues with "bug" label) from the repository...');
 
             // Fetch issues data from GitHub
@@ -106,8 +106,8 @@ export class CorrectnessMetric extends Metric {
             });
 
             // Measure end time
-            const endTime = Date.now();
-            card.correctness_Latency = endTime - startTime;
+            const fetchEndTime = Date.now();
+            card.correctness_Latency = parseFloat(((fetchEndTime - fetchStartTime) / 1000).toFixed(3));
             logger.info(`analyzeBugs API Latency: ${card.correctness_Latency} ms`);
 
             const issues = issuesData.data;

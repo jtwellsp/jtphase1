@@ -35,7 +35,7 @@ export class BusFactorMetric extends Metric {
         try {
             logger.info('Starting bus factor evaluation...');
             // Measure start time
-            const startTime = Date.now();
+            const fetchStartTime = Date.now();
             logger.debug('Start time recorded.');
 
             // Fetch contributors data from GitHub API
@@ -47,12 +47,12 @@ export class BusFactorMetric extends Metric {
             });
 
             // Measure end time
-            const endTime = Date.now();
+            const fetchEndTime = Date.now();
             logger.debug('End time recorded.');
 
             // Calculate latency in milliseconds
-            card.busFactor_Latency = endTime - startTime;
-            logger.info(`API Latency: ${card.busFactor_Latency} ms`);
+            card.busFactor_Latency = parseFloat(((fetchEndTime - fetchStartTime) / 1000).toFixed(3));
+            
 
             const contributors = contributorsData.data;
 

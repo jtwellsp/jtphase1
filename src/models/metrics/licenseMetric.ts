@@ -105,7 +105,7 @@ export class LicenseMetric extends Metric {
             }
 
             // Set the total latency for license evaluation
-            card.license_Latency = totalLatency;
+            card.license_Latency = parseFloat(((totalLatency) / 1000).toFixed(3));;
             logger.info(`License evaluation completed. Total latency: ${totalLatency} ms`);
 
         } catch (error) {
