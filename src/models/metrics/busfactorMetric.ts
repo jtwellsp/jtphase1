@@ -32,7 +32,7 @@ export class BusFactorMetric extends Metric {
     public async evaluate(card: Scorecard & { BusFactor_Latency?: number }): Promise<void> {
         try {
             // Measure start time
-            const startTime = Date.now();
+            const fetchStartTime = Date.now();
 
             // Fetch contributors data from GitHub API
             const contributorsData = await this.octokit.repos.listContributors({
@@ -42,11 +42,11 @@ export class BusFactorMetric extends Metric {
             });
 
             // Measure end time
-            const endTime = Date.now();
+            const fetchEndTime = Date.now();
 
             // Calculate latency in milliseconds
-            card.busFactor_Latency = endTime - startTime;
-            //console.log(`API Latency: ${card.busFactor_Latency} ms`); 
+            card.busFactor_Latency = parseFloat(((fetchEndTime - fetchStartTime) / 1000).toFixed(3));
+            
 
             const contributors = contributorsData.data;
 

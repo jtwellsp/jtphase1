@@ -29,7 +29,7 @@ export class RampUpMetric extends Metric {
     public async evaluate(card: Scorecard): Promise<void> {
         try {
             // Measure start time
-            const startTime = Date.now();
+            const fetchStartTime = Date.now();
 
             // Fetch the README file from the repository
             const readmeData = await this.octokit.repos.getReadme({
@@ -38,9 +38,9 @@ export class RampUpMetric extends Metric {
             });
 
             // Measure end time
-            const endTime = Date.now();
-            card.rampUp_Latency = endTime - startTime;
-            //console.log(`getReadme API Latency: ${latency} ms`);
+            const fetchEndTime = Date.now();
+            card.rampUp_Latency = parseFloat(((fetchEndTime - fetchStartTime) / 1000).toFixed(3));
+            
 
             const readmeContent = Buffer.from(readmeData.data.content, 'base64').toString('utf-8');
 
@@ -48,7 +48,7 @@ export class RampUpMetric extends Metric {
             const readmeScore = this.analyzeReadme(readmeContent);
 
             // Assign the score to the ramp-up field in Scorecard
-            card.rampUp = readmeScore;
+            card.rampUp = Number(readmeScore.toFixed(3));
 
         } catch (error) {
             console.error('Error fetching README information:', error);

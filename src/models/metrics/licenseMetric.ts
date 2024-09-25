@@ -88,7 +88,7 @@ export class LicenseMetric extends Metric {
             }
 
             // Set the total latency for license evaluation
-            card.license_Latency = totalLatency;
+            card.license_Latency = parseFloat(((totalLatency) / 1000).toFixed(3));;
             
         } catch (error) {
             console.error('Error fetching license information:', error);

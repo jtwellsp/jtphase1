@@ -49,7 +49,7 @@ export class CorrectnessMetric extends Metric {
     private async checkForTests(card: Scorecard): Promise<boolean> {
         try {
             // Measure start time
-            const startTime = Date.now();
+            const fetchStartTime = Date.now();
 
             // Fetch package.json content
             const packageJsonData = await this.octokit.repos.getContent({
@@ -59,9 +59,9 @@ export class CorrectnessMetric extends Metric {
             });
 
             // Measure end time
-            const endTime = Date.now();
-            card.correctness_Latency = endTime - startTime;
-            //console.log(`checkForTests API Latency: ${latency} ms`); 
+            const fetchEndTime = Date.now();
+            card.correctness_Latency = parseFloat(((fetchEndTime - fetchStartTime) / 1000).toFixed(3));
+           
 
             const packageJsonContent = Buffer.from((packageJsonData.data as any).content, 'base64').toString('utf-8');
             const packageJson = JSON.parse(packageJsonContent);
@@ -85,7 +85,7 @@ export class CorrectnessMetric extends Metric {
     private async analyzeBugs(card: Scorecard): Promise<number> {
         try {
             // Measure start time
-            const startTime = Date.now();
+            const fetchStartTime = Date.now();
 
             // Fetch issues data from GitHub
             const issuesData = await this.octokit.issues.listForRepo({
@@ -97,8 +97,8 @@ export class CorrectnessMetric extends Metric {
             });
 
             // Measure end time
-            const endTime = Date.now();
-            card.correctness_Latency = endTime - startTime;
+            const fetchEndTime = Date.now();
+            card.correctness_Latency = parseFloat(((fetchEndTime - fetchStartTime) / 1000).toFixed(3));
             //console.log(`analyzeBugs API Latency: ${latency} ms`); 
 
             const issues = issuesData.data;
