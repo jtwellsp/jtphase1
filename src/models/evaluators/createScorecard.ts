@@ -45,12 +45,18 @@ export async function createScorecard(url: string): Promise<Scorecard> {
  * @returns GitHub repository URL for an npm module
  */
 async function getNpmRepoURL(url: string): Promise<string> {
-    const npmApiUrl = url.replace(/(?<=\/)www(?=\.)/, 'replicate').replace('/package', '')
-    logger.info(`Fetching repository URL from npm API: ${npmApiUrl}`); // Log the API URL
+    const npmApiUrl = url.replace(/(?<=\/)www(?=\.)/, 'replicate').replace('/package', '');
+    logger.info(`Fetching repository URL from npm API: ${npmApiUrl}`);
     const npmApiResponse = await fetch(npmApiUrl);
     const npmApiData = await npmApiResponse.json();
+
+    if (!npmApiData.repository || !npmApiData.repository.url) {
+        logger.error(`Repository URL not found in npm package data for URL: ${url}`);
+        throw new Error('Repository URL not found in npm package data');
+    }
+
     const npmRepoUrl = npmApiData.repository.url;
-    logger.info(`NPM Repository URL: ${npmRepoUrl}`); 
+    logger.info(`NPM Repository URL: ${npmRepoUrl}`);
     return npmRepoUrl;
 }
 

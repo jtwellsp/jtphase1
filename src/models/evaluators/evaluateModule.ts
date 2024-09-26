@@ -41,10 +41,10 @@ metrics.push(new RampUpMetric());
  * 
  * This is the main driving function for evaluating modules.
  * It creates a Scorecard object for the module and then passes it to each object in the array for evaluation.
- * The results are then returned in JSON format, and will be passed to the front end.
+ * The results are then returned in NDJSON format, and will be passed to the front end.
  * 
  * @param {string} url : URL of the module
- * @returns {Promise<string>} : JSON string of the results
+ * @returns {Promise<string>} : NDJSON string of the results
  * 
  */
 export async function evaluateModule(url: string): Promise<string> {

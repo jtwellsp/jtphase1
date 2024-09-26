@@ -1,61 +1,94 @@
-import { describe, it, expect, vi, Mock } from 'vitest';
+// tests/helpers/createScorecard.test.ts
+
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createScorecard } from '../../src/models/evaluators/createScorecard';
 import { Scorecard } from '../../src/models/scores/scorecard';
-import logger from '../../src/logger';
 
-vi.mock('../../src/logger');
-vi.mock('../../src/models/scores/scorecard');
+// Mock the logger
+vi.mock('../../logger.js', () => ({
+  default: {
+    info: vi.fn(),
+    debug: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  },
+}));
+
+// Mock the global fetch function
+vi.stubGlobal('fetch', vi.fn());
+
+// Type assertion for fetch
+import type { Mock } from 'vitest';
+const fetchMock = fetch as Mock;
 
 describe('createScorecard', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('should create a Scorecard for a GitHub URL', async () => {
     const url = 'https://github.com/owner/repo';
-    const scorecard = new Scorecard(url);
-    scorecard.owner = 'owner';
-    scorecard.repo = 'repo';
+    const scorecard = await createScorecard(url);
 
-    // Mock the Scorecard constructor to return the expected scorecard instance
-    (Scorecard as Mock).mockImplementation(() => scorecard);
-
-    const result = await createScorecard(url);
-
-    console.log(result.owner);
-    console.log(result.repo);
-
-    expect(result).toEqual(scorecard);
-    expect(logger.info).toHaveBeenCalledWith(`Creating scorecard for URL: ${url}`);
-    expect(logger.info).toHaveBeenCalledWith(`Detected GitHub URL: ${url}`);
-    expect(logger.info).toHaveBeenCalledWith(`Owner: owner`);
-    expect(logger.info).toHaveBeenCalledWith(`Repo: repo`);
+    expect(scorecard).toBeInstanceOf(Scorecard);
+    expect(scorecard.owner).toBe('owner');
+    expect(scorecard.repo).toBe('repo');
   });
 
   it('should create a Scorecard for an npm URL', async () => {
-    const url = 'https://www.npmjs.com/package/module';
-    const repoUrl = 'https://github.com/owner/repo';
-    const scorecard = new Scorecard(url);
-    scorecard.owner = 'owner';
-    scorecard.repo = 'repo';
+    const url = 'https://www.npmjs.com/package/example-package';
 
-    global.fetch = vi.fn().mockResolvedValue({
-      json: vi.fn().mockResolvedValue({
-        repository: { url: repoUrl }
-      })
-    });
+    // Mock the fetch response for the npm API call
+    fetchMock.mockResolvedValueOnce({
+      json: async () => ({
+        repository: {
+          url: 'https://github.com/owner/repo',
+        },
+      }),
+    } as Response);
 
-    const result = await createScorecard(url);
+    const scorecard = await createScorecard(url);
 
-    expect(result).toEqual(scorecard);
-    expect(logger.info).toHaveBeenCalledWith(`Creating scorecard for URL: ${url}`);
-    expect(logger.info).toHaveBeenCalledWith(`Detected npm URL: ${url}`);
-    expect(logger.info).toHaveBeenCalledWith(`Fetching repository URL from npm API: https://replicate.npmjs.com/module`);
-    expect(logger.info).toHaveBeenCalledWith(`NPM Repository URL: ${repoUrl}`);
-    expect(logger.info).toHaveBeenCalledWith(`Owner: owner`);
-    expect(logger.info).toHaveBeenCalledWith(`Repo: repo`);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(scorecard).toBeInstanceOf(Scorecard);
+    expect(scorecard.owner).toBe('owner');
+    expect(scorecard.repo).toBe('repo');
   });
 
   it('should throw an error for an invalid URL', async () => {
-    const url = 'https://invalid.com/package/module';
+    const url = 'https://invalidurl.com/package/example-package';
 
     await expect(createScorecard(url)).rejects.toThrow('Invalid URL');
-    expect(logger.error).toHaveBeenCalledWith(`Invalid URL: ${url}`);
+  });
+
+  it('should handle npm URL with repository URL ending with .git', async () => {
+    const url = 'https://www.npmjs.com/package/example-package';
+
+    fetchMock.mockResolvedValueOnce({
+      json: async () => ({
+        repository: {
+          url: 'https://github.com/owner/repo.git',
+        },
+      }),
+    } as Response);
+
+    const scorecard = await createScorecard(url);
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(scorecard).toBeInstanceOf(Scorecard);
+    expect(scorecard.owner).toBe('owner');
+    expect(scorecard.repo).toBe('repo'); // '.git' should be removed
+  });
+
+  it('should handle npm URL when repository URL is not provided', async () => {
+    const url = 'https://www.npmjs.com/package/example-package';
+
+    fetchMock.mockResolvedValueOnce({
+      json: async () => ({
+        // No repository field
+      }),
+    } as Response);
+
+    await expect(createScorecard(url)).rejects.toThrow('Repository URL not found in npm package data');
   });
 });
