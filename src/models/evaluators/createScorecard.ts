@@ -63,8 +63,8 @@ async function getNpmRepoURL(url: string): Promise<string> {
  */
 function setGitHubAttributes(url: string, urlRepo: string): Scorecard {
     const card = new Scorecard(url);
-    card.owner = urlRepo.split('/')[3];
-    card.repo = urlRepo.split('/')[4];
+    card.owner = urlRepo.split('/')[3].trim();
+    card.repo = urlRepo.split('/')[4].trim();
 
     if (card.repo.includes('.git')) {
         card.repo = card.repo.replace('.git', '');
