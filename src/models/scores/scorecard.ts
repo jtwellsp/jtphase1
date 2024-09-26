@@ -57,7 +57,15 @@ export class Scorecard {
     
     // [TODO] Add weights
     public calculateNetScore(): void {
-        this.netScore = (this.rampUp + this.correctness + this.busFactor + this.responsiveMaintainer + this.license) / 5;
+        // Calculate net score based on Sarah's priorities
+        // Responsive maintainers are her highest priority, she also wants low ramp up time
+        let rampUpWeight = 0.8
+        let correctnessWeight = 0.6
+        let busFactorWeight = 0.4
+        let responsiveMaintainerWeight = 0.9
+        let licenseWeight = 0.5
+        this.netScore = (this.rampUp * rampUpWeight + this.correctness * correctnessWeight + this.busFactor * busFactorWeight + this.responsiveMaintainer * responsiveMaintainerWeight + this.license * licenseWeight) / 5;
+        this.netScore_Latency =  parseFloat(((this.rampUp_Latency * rampUpWeight  + this.correctness_Latency * correctnessWeight + this.busFactor_Latency * busFactorWeight + this.responsiveMaintainer_Latency * responsiveMaintainerWeight + this.license_Latency * licenseWeight) / 5).toFixed(3));
     }
 
     // Convert all member variables to NJSON
