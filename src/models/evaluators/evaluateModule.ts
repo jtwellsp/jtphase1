@@ -58,6 +58,8 @@ export async function evaluateModule(url: string): Promise<string> {
     for (const metric of metrics) {
         await metric.evaluate(scorecard);
     }
+
+    scorecard.calculateNetScore();
     
     return scorecard.getResults();
 }
