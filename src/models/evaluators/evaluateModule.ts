@@ -54,10 +54,8 @@ export async function evaluateModule(url: string): Promise<string> {
     // Call the createScorecard function
     const scorecard: Scorecard = await createScorecard(url);
 
-    // Iterate through the array and call evaluate() on each object
-    for (const metric of metrics) {
-        await metric.evaluate(scorecard);
-    }
+    // Run all metric evaluations in parallel
+    await Promise.all(metrics.map(metric => metric.evaluate(scorecard)));
 
     scorecard.calculateNetScore();
     
