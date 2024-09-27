@@ -6,8 +6,10 @@ export default defineConfig({
     environment: 'node',  // Set the test environment to Node.js
     include: ['tests/**/*.test.ts'],  // Specify the test files
     coverage: {
-      reporter: ['text', 'json', 'html', 'lcov'],  // Generate coverage reports
+      enabled: true,  // Enable coverage reports
+      reporter: ['json', 'json-summary'],  // Generate coverage reports
       include: ['src/**/*.ts'],
+      exclude: ['src/server/**/*.ts']
     },
   },
 });

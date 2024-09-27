@@ -113,9 +113,10 @@ export class LicenseMetric extends Metric {
             fs.rmSync(this.cloneDir, { recursive: true, force: true });
 
         } catch (error) {
-            logger.error('Error fetching license information:', error);
             card.license = 0;
             card.license_Latency = 0; // Set latency to 0 in case of error
+            logger.error('Error fetching license information:', error);
+            
         }
     }
 
