@@ -35,6 +35,14 @@ import { Octokit } from '@octokit/rest';
 
 describe('CorrectnessMetric', () => {
   let correctnessMetric: CorrectnessMetric;
+  /**
+   * Mock object for Octokit API interactions.
+   * 
+   * @property {Object} repos - Mock for repository-related API calls.
+   * @property {Mock} repos.getContent - Mock function for getting repository content.
+   * @property {Object} issues - Mock for issue-related API calls.
+   * @property {Mock} issues.listForRepo - Mock function for listing issues in a repository.
+   */
   let octokitMock: {
     repos: {
       getContent: Mock;

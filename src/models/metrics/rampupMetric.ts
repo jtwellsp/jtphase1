@@ -119,7 +119,7 @@ export class RampUpMetric extends Metric {
     }
 
     private evaluateExternalLinks(content: string): number {
-        const linkRegex = /\[.*?\]\(.*?\)/g;
+        const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
         const links = content.match(linkRegex);
         let score = 0;
         if (links && links.length > 5) {
@@ -132,7 +132,14 @@ export class RampUpMetric extends Metric {
     }
 
     private lintReadme(content: string): number {
-        const options = { strings: { content }, config: { default: true } };
+        const options = {
+            strings: { content },
+            config: {
+                "default": true,
+                "line-length": false, // Example: disable line-length rule
+                // Add other rules or configurations as needed
+            }
+        };
         const lintResults = markdownlint.sync(options);
     
         const errors = lintResults[Object.keys(lintResults)[0]] || [];
