@@ -66,30 +66,98 @@ export class RampUpMetric extends Metric {
         logger.debug(`Analyzing README content...`);
         let score = 0;
 
-        // Check for key sections in the README
-        const sections = ['Installation', 'Usage', 'Contributing', 'License'];
+            // Define important sections with weighted scoring
+        const sections = [
+            { name: 'Installation', weight: 0.2 },
+            { name: 'Usage', weight: 0.2 },
+            { name: 'Contributing', weight: 0.1 },
+            { name: 'Contributions', weight: 0.1 },
+            { name: 'Getting Started', weight: 0.2 },
+            { name: 'Documentation', weight: 0.1 },
+            { name: 'License', weight: 0.1 },
+            { name: 'Support', weight: 0.1 }
+        ];
+
+        // Analyze presence and quality of sections
         sections.forEach(section => {
-            const regex = new RegExp(`#\\s*${section}`, 'i');
+            const regex = new RegExp(`#\\s*${section.name}`, 'i');
             if (regex.test(content)) {
-                score += 0.2;
-                logger.debug(`Section "${section}" found in README.`);
+                score += section.weight;
+                logger.debug(`Section "${section.name}" found and scored.`);
             } else {
-                logger.debug(`Section "${section}" not found in README.`);
+                logger.debug(`Section "${section.name}" not found.`);
             }
         });
 
-        // Lint the README for quality and markdown errors
-        logger.debug(`Linting the README content...`);
-        const options = { strings: { content }, config: { default: true } };
-        const lintResults = markdownlint.sync(options);
+        // Analyze the README for code examples
+        score += this.evaluateCodeExamples(content);
 
-        const lintScore = lintResults.toString().split('\n').length > 0 ? 0 : 0.2;
-        score += lintScore;
-        logger.debug(`README lint score: ${lintScore}`);
+        // Analyze the README for external links
+        score += this.evaluateExternalLinks(content);
+
+        // Lint the README for quality and markdown errors
+        score += this.lintReadme(content);
 
         // Ensure the score is between 0 and 1
         const finalScore = Math.min(score, 1);
         logger.debug(`Final README score: ${finalScore}`);
         return finalScore;
     }
+
+    private evaluateCodeExamples(content: string): number {
+        const codeBlockCount = (content.match(/```/g) || []).length / 2; // Each code block has two ```
+        let score = 0;
+        if (codeBlockCount > 2) {
+            score = 0.2;  // Sufficient examples present
+        } else if (codeBlockCount > 0) {
+            score = 0.1;  // Few examples
+        }
+
+        logger.debug(`Found ${codeBlockCount} code examples, score: ${score}`);
+
+        return score;
+    }
+
+    private evaluateExternalLinks(content: string): number {
+        const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+        const links = content.match(linkRegex);
+        let score = 0;
+        if (links && links.length > 5) {
+            score = 0.1;  // Bonus score for providing multiple external resources
+        }
+
+        logger.debug(`Found ${links?.length || 0} external links, score: ${score}`);
+
+        return score;
+    }
+
+    private lintReadme(content: string): number {
+        const options = {
+            strings: { content },
+            config: {
+                "default": true,
+                "line-length": false, // Example: disable line-length rule
+                // Add other rules or configurations as needed
+            }
+        };
+        const lintResults = markdownlint.sync(options);
+    
+        const errors = lintResults[Object.keys(lintResults)[0]] || [];
+        const errorCount = errors.length;
+        let score = 0;
+    
+        if (errorCount === 0) {
+            score = 0.2;  // No linting issues
+        } else if (errorCount < 3) {
+            score = 0.1;  // Few minor issues
+        } else {
+            score = 0;    // Significant linting issues
+        }
+    
+        logger.debug(`Linted README with ${errorCount} issues, score: ${score}`);
+
+        return score;
+    }
+    
+
 }

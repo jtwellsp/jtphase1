@@ -8,8 +8,8 @@
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
-    "types": ["node"]
+    "types": ["node", "vitest/globals"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/utils/extract-results.ts"],
   "exclude": ["node_modules"]
 }

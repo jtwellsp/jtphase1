@@ -21,9 +21,8 @@ fi
 
 # Run the test suite
 if [ $arg == "test" ]; then
-    #echo "Running npm test..."
-    #npm test
-    echo "15/20 test cases passed. 80% line coverage achieved."
+    echo "Running npm test..."
+    npm run auto-grader-test | grep -v "JSON report written to"
     exit 0
 fi
 

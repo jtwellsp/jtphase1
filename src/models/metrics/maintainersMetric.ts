@@ -95,17 +95,18 @@ export class MaintainersMetric extends Metric {
             let responseScore = 1;
             if (averageResponseTime <= 72) {  // Less than or equal to 3 days
                 responseScore = 1;
-                logger.info('Average response time is within 24 hours. Setting score to 1.');
+                logger.info('Average response time is within 72 hours (3 days). Setting score to 1.');
             } else if (averageResponseTime <= 168) { // Less than or equal to 7 days
                 responseScore = 0.7;
-                logger.info('Average response time is within 72 hours. Setting score to 0.7.');
+                logger.info('Average response time is within 168 hours (7 days). Setting score to 0.7.');
             } else if (averageResponseTime <= 336) { // Less than or equal to 14 days
                 responseScore = 0.4;
-                logger.info('Average response time is within 168 hours. Setting score to 0.4.');
+                logger.info('Average response time is within 336 hours (14 days). Setting score to 0.4.');
             } else {  // More than 14 days
                 responseScore = 0;
-                logger.info('Average response time exceeds 168 hours. Setting score to 0.');
+                logger.info('Average response time exceeds 336 hours (14 days). Setting score to 0.');
             }
+
 
             card.responsiveMaintainer = responseScore;
 

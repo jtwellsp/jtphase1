@@ -105,12 +105,15 @@ export class CorrectnessMetric extends Metric {
                 per_page: 100,
             });
 
+
             // Measure end time
             const fetchEndTime = Date.now();
             card.correctness_Latency = parseFloat(((fetchEndTime - fetchStartTime) / 1000).toFixed(3));
             logger.info(`analyzeBugs API Latency: ${card.correctness_Latency} ms`);
 
             const issues = issuesData.data;
+            logger.debug(`Fetched ${issues.length} issues with "bug" label from the repository.`);
+            logger.debug(issues);
             const openBugs = issues.filter(issue => issue.state === 'open').length;
             const closedBugs = issues.filter(issue => issue.state === 'closed').length;
             logger.debug(`Number of open bugs: ${openBugs}, Number of closed bugs: ${closedBugs}`);
