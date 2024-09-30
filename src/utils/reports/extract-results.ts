@@ -1,7 +1,6 @@
 // extract-results.ts
 
 import fs from 'fs';
-import path from 'path';
 
 interface TestResult {
   status: string;
@@ -24,7 +23,7 @@ interface CoverageSummaryData {
 }
 
 function readTestResults(): { totalTests: number; passedTests: number } {
-  const resultsPath = 'vitest-results.json';
+  const resultsPath = 'src/utils/reports/vitest-results.json';
   const data = fs.readFileSync(resultsPath, 'utf-8');
   const results: TestResults = JSON.parse(data);
 
@@ -44,7 +43,7 @@ function readTestResults(): { totalTests: number; passedTests: number } {
 }
 
 function readCoverageData(): number {
-  const coveragePath = 'coverage/coverage-summary.json';
+  const coveragePath = 'src/utils/reports/coverage/coverage-summary.json';
   const data = fs.readFileSync(coveragePath, 'utf-8');
   const coverage: CoverageSummaryData = JSON.parse(data);
 
@@ -56,15 +55,7 @@ function writeResultsToConsole() {
   const { totalTests, passedTests } = readTestResults();
   const coveragePercentage = readCoverageData();
 
-  const ratio = ((passedTests / totalTests) * 100).toFixed(2);
-
-  const output = `Total Tests: ${totalTests}
-Passed Tests: ${passedTests}
-Test Pass Ratio: ${ratio}%
-Total Code Coverage: ${coveragePercentage}%
-`;
-
-  console.log(`${passedTests}/${totalTests} tests cases passed. ${coveragePercentage}% line coverage achieved.`);
+  console.log(`${passedTests}/${totalTests} test cases passed. ${coveragePercentage}% line coverage achieved.`);
 
 }
 
