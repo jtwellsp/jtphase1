@@ -20,6 +20,8 @@ fi
 # Run the test suite
 if [ $arg == "test" ]; then
     npm run auto-grader-test | grep -v "JSON report written to"
+    npm run build
+    node dist/utils/reports/extract-results.js
     exit 0
 fi
 
@@ -32,10 +34,5 @@ if [ -f $arg ]; then
     exit 0
 fi
 
-# Otherwise, assume the argument is a URL
-echo "Argument is a URL: $arg"
-# Compile TS files
-npm run build
-# Pass the URL to index.js
-node dist/index.js --url "$arg"
+exit 1
 
