@@ -8,15 +8,14 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import { evaluateModule } from "./models/evaluators/evaluateModule.js";
 import { readURLsFromFile } from "./models/evaluators/readURLsFromFile.js";
 
 import dotenv from "dotenv";
 dotenv.config();
 
-// Fill these in if you want to test while running in development mode
-const testURL = "";
-const testFile = "";
+if (!process.env.LOG_FILE || !process.env.GITHUB_TOKEN) {
+  process.exit(1);
+}
 
 // Command line arguments
 const argv = yargs(hideBin(process.argv))
@@ -32,15 +31,9 @@ const argv = yargs(hideBin(process.argv))
   })
   .parseSync();
 
-// Get the URL and file from the command line arguments, or use testing values
-const url = argv.url || testURL;
-const file = argv.file || testFile;
+// Get file from the command line arguments, or use testing values
+const file = argv.file;
 
-// Call the evaluateModule function with the URL
-if (url) {
-  const result = evaluateModule(url);
-  console.log(result);
-}
 
 if (file) {
   //console.log(`File: ${file}`);

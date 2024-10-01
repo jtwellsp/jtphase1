@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo "Running script..."
 
 # Check if the number of command line arguments is less than 1
 if [ $# -lt 1 ]; then
@@ -14,29 +13,20 @@ arg=$1
 
 # Install dependencies
 if [ $arg == "install" ]; then
-    echo "Running npm install..."
     npm install
     exit 0
 fi
 
 # Run the test suite
 if [ $arg == "test" ]; then
-    echo "Running npm test..."
     npm run auto-grader-test | grep -v "JSON report written to"
-    exit 0
-fi
-
-
-# Run the development server
-if [ $arg == "dev" ]; then
-    echo "Running npm run dev..."
-    npm run dev
+    npm run build
+    node dist/utils/reports/extract-results.js
     exit 0
 fi
 
 # Check if the argument is a file path
 if [ -f $arg ]; then
-    # echo "Argument is a file path: $arg"
     # Compile TS files
     npm run build
     # Pass the file path index.js
@@ -44,10 +34,5 @@ if [ -f $arg ]; then
     exit 0
 fi
 
-# Otherwise, assume the argument is a URL
-echo "Argument is a URL: $arg"
-# Compile TS files
-npm run build
-# Pass the URL to index.js
-node dist/index.js --url "$arg"
+exit 1
 
